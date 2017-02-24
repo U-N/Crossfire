@@ -1,0 +1,132 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue255;\red163\green21\blue21;\red0\green0\blue0;
+}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c0\c100000;\csgenericrgb\c63900\c8200\c8200;\csgenericrgb\c0\c0\c0;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab543
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0 #include \cf3 <stdio.h>\cf2 \
+ #include \cf3 <string.h>\cf2 \
+\cf4  \
+ \cf2 int\cf4  EndsWithFoo(\cf2 const\cf4  \cf2 char\cf4 * s);\
+ \
+ \cf2 int\cf4  main(\cf2 void\cf4 )\
+ \{\
+ printf(\cf3 "%d\\n"\cf4 , EndsWithFoo(\cf3 "whatever.foo"\cf4 ));\
+ \
+ \cf2 return\cf4  0;\
+ \}\
+ \
+ \cf2 int\cf4  EndsWithFoo(\cf2 const\cf4  \cf2 char\cf4 * s)\
+ \{\
+ \cf2 char\cf4  a[3][4]=\{\{\cf3 "hello"\cf4 , \cf3 "sakhf"\cf4 , \cf3 "hdfjso"\cf4 , \cf3 "sfjhd"\cf4 \},\{\cf3 "hello"\cf4 , \cf3 "sakhf"\cf4 , \cf3 "hdfjso"\cf4 , \cf3 "sfjhd"\cf4 \},\{\cf3 "hello"\cf4 , \cf3 "sakhf"\cf4 , \cf3 "hdfjso"\cf4 , \cf3 "sfjhd"\cf4 \}\}\
+ \cf2 int\cf4  ret = 0;\
+ \cf2 int\cf4  count=0;\
+ \cf2 while\cf4 (count<5)\{\
+ \cf2 while\cf4 (count1<5)\{\
+ \cf2 if\cf4  (s != \cf2 NULL\cf4 )\
+ \{\
+ size_t size = strlen(s);\
+ \
+ \cf2 if\cf4  (s[size-1] == 'o')\
+ \{\
+ ret = 1;\
+ \}\
+ \}\
+ \}\
+ \}\
+ \
+ \
+ \cf2 return\cf4  ret;\
+ \}\
+\
+\cf2 #include \cf3 <stdio.h>\cf2 \
+#include \cf3 <string.h>\cf2 \
+#include \cf3 "header.h"\cf2 \
+\cf4 \
+\cf2 char\cf4  ssort[slotsrow][column];\
+\cf2 char\cf4  stemp[slotsrow][column];\
+\
+\cf2 void\cf4  sortslots()\
+\{\
+    \cf2 int\cf4  count=0, count1=0;\
+    \cf2 char\cf4  str[slotsrow][column];\
+    \
+    printf(\cf3 "\\n-------Sorted List of Slots-------\\n"\cf4 );\
+    \
+    \cf2 while\cf4 (count<slotsrow)\{\
+        \cf2 while\cf4 (count1<column)\{\
+            str[count][count1]=1;\
+            strcpy(ssort[count], slotArr[count]);\
+            count1++;\
+        \}\
+        count1=0;\
+        printf(\cf3 "2%s\\n"\cf4 , stemp[count]);\
+        count++;\
+    \}\
+    \
+    \cf2 while\cf4 (count<slotsrow)\{\
+	    size_t col = strlen(ssort[count]);\
+     \cf2 while\cf4 (count1<col)\{\
+     stemp[count][col]=ssort[count][count1];\
+     printf(\cf3 "%d %zu\\n"\cf4 , count1, col);\
+     count1++;\
+     col--;\
+     \}\
+     count1=0;\
+     printf(\cf3 "%d 1 %s\\n"\cf4 , count, stemp[count]);\
+     count++;\
+     \}\
+\}\
+\
+\
+\
+\cf2 #include \cf3 <stdio.h>\cf2 \
+#include \cf3 <string.h>\cf2 \
+\cf4 \
+\cf2 int\cf4  main(\cf2 void\cf4 )\
+\{\
+    \cf2 char\cf4  a[3][4]=\{\{\cf3 "hello"\cf4 , \cf3 "sakhf"\cf4 , \cf3 "hdfjso"\cf4 , \cf3 "sfjhd"\cf4 \},\{\cf3 "hello"\cf4 , \cf3 "sakhf"\cf4 , \cf3 "hdfjso"\cf4 , \cf3 "sfjhd"\cf4 \},\{\cf3 "hello"\cf4 , \cf3 "sakhf"\cf4 , \cf3 "hdfjso"\cf4 , \cf3 "sfjhd"\cf4 \}\}\
+    \cf2 int\cf4  ret = 0;\
+    \cf2 int\cf4  count=0;\
+    \cf2 while\cf4 (count<5)\{\
+        \cf2 while\cf4 (count1<5)\{\
+            \cf2 if\cf4  (a[count] != \cf2 NULL\cf4 )\
+            \{\
+                size_t size = strlen(s);\
+                \
+                \cf2 if\cf4  (s[size-1] == 'o')\
+                \{\
+                    ret = 1;\
+                \}\
+            \}\
+        \}\
+    \}\
+\
+    \
+    \cf2 return\cf4  ret;\
+\}\
+\
+\
+\
+\cf2 while\cf4 (count<slotsrow)\
+\{\
+    size_t size = strlen(ssort[count]);\
+    printf(\cf3 "%zu\\n"\cf4 ,size);\
+    \cf2 while\cf4 (count1<slotsrow)\{\
+        \cf2 if\cf4  (ssort[count][size-1] == count1)\
+        \{\
+            printf(\cf3 "%s"\cf4 ,ssort[count]);\
+        \}\
+        \cf2 else\cf4  \cf2 if\cf4  (ssort[count][size-1] == 'x')\
+        \{\
+            store=count;\
+        \}\
+        count1++;\
+    \}\
+    count1=0;\
+    count++;\
+\}}
