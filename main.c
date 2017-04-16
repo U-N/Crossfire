@@ -6,9 +6,10 @@
 #include <math.h>
 /* inclusion of my header files where my code has been sectioned off according to certain requirements for the game.*/
 #include "slot.h"
-#include "attack.h"
+//#include "attack.h"
 #include "capabilities.h"
-#include "movement.h"
+//#include "movement.h"
+#include "board.h"
 
 /* functions are initialized which need variables such as slot and player counting from the header files*/
 void capabilities(int count, int i);
@@ -16,22 +17,20 @@ void slot_type(int slot_cnt);
 void slot_assign(int slot_cnt, int player_cnt);
 int attack(int no, int playersize, int remainingplayers);
 void movement(int i, int direction);
+int createboard(int player_cnt);
+void printboard(int boardsize, int player_cnt);
 
 int main(){
 	int player_cnt=0, slot_cnt=0, i;
 	int Opt_class = 0;
 
-	printf("Please enter the number of players between 1-6: "); /* program is asking the user the name of players he/she wants in the game*/
+	printf("Please enter the number of players between 2-6: "); /* program is asking the user the name of players he/she wants in the game*/
 	fflush(stdout);
-	while(player_cnt<1 || player_cnt>6){ //Make sure the player chooses a valid number of players
+	while(player_cnt<2 || player_cnt>6){ //Make sure the player chooses a valid number of players
 		scanf("%d", &player_cnt);
 	}
 
-	printf("Please enter the number of board slots you would like between %d-20: ", player_cnt); /* the program allows the user the make the decision on how big the board game is*/
-	fflush(stdout);
-	while(slot_cnt<player_cnt || slot_cnt>20){ //Make sure the player chooses a valid number of slots
-		scanf("%d", &slot_cnt);
-	}
+    int boardsize = createboard(player_cnt);
 
 	for(i=0;i<player_cnt;i++){
 		//Assign temps for later use in ensure capabilities outside boundaries are not reached.
@@ -78,8 +77,7 @@ int main(){
 	}
 
 	/*This section of code allows me to assign a specific starting slot to each player and change their abilities depending on which slot they move to next*/
-	slot_type(slot_cnt);
-	slot_assign(slot_cnt, player_cnt);
+	slot_assign(boardsize, player_cnt);
 
 	for(i=0;i<player_cnt;++i){
 		puts("");
@@ -102,22 +100,28 @@ int main(){
 			fflush(stdout);
 		}
 
-		printf("%s is at %d ->", players[i].playername, players[i].slotNum);
+		printf("%s is at %d, %d ->", players[i].playername, players[i].x, players[i].y);
 
-		if(slots[players[i].slotNum].slot == LevelGround){ /* prints the type of slot according to the slottype enumeration in struct.h*/
+		if(slots[players[i].x].slot[players[i].y] == LevelGround){ /* prints the type of slot according to the slottype enumeration in struct.h*/
 			printf("  Level Ground\n");
 		}
 
-		if(slots[players[i].slotNum].slot == Hill){
+		if(slots[players[i].x].slot[players[i].y] == Hill){
 			printf("  Hill\n");
 		}
-		if(slots[players[i].slotNum].slot == City){
+        
+		if(slots[players[i].x].slot[players[i].y] == City){
 			printf("  City\n");
 		}
+        
 		puts("");
 	}
 
+    printboard(boardsize, player_cnt);
+    printf("1 \n");
+
 	//Game Mechanics
+    /* Movement
 
 	int remainingplayers = player_cnt;
 	int action = 0;
@@ -148,7 +152,7 @@ int main(){
 						}
 						else{
 							//Call the movement function
-							movement(i, action);
+							//movement(i, action);
 						}
 					}
 					else if(action == 3){
@@ -158,7 +162,7 @@ int main(){
 							action=0;
 						}
 						else{
-							movement(i, action);
+							//movement(i, action);
 						}
 					}
 					else{
@@ -182,6 +186,8 @@ int main(){
 		}
 		i++;
 	}
+     
+     */
 	return 0;
 }
 

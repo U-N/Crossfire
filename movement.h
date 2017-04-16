@@ -30,7 +30,7 @@ void movement(int i, int direction){
 	if(slots[players[i].slotNum].slot == City){
 		printf("  City\n\n");
 	}
-	//Call the function to check if any effects need to be removed or applied
+	//Call the function to check if any board effects need to be removed or applied
 	CAP_CHANGES(i);
 }
 

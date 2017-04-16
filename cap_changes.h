@@ -7,7 +7,7 @@
 void CAP_CHANGES(int i){ /* including the content of the function which allows abilities to change based on the slot type the player is on */
 
 	//Hill
-	if(players[i].type == Hill){
+	if(slots[players[i].x].slot[players[i].y] == Hill){
 		//Heffect makes sure the effect is not already applied
 		if(players[i].dexterity < 50 && players[i].Heffect == 0){
 			//If the players strength is too low, we can assign the current strength to 1
@@ -77,7 +77,7 @@ void CAP_CHANGES(int i){ /* including the content of the function which allows a
 
 	//City
 	//Applying the same techniques from above to the city setting
-	if(players[i].type == City){
+	if(slots[players[i].x].slot[players[i].y] == City){
 		if(players[i].intelligence > 60 && players[i].Ceffect == 0){
 			if(players[i].magic > 90){
 				players[i].magtemp = players[i].magic;
@@ -131,7 +131,7 @@ void CAP_CHANGES(int i){ /* including the content of the function which allows a
 	}
 
 	//Level ground is purely to remove effects as their are no impacts to capabilities here
-	if(players[i].type == LevelGround){
+	if(slots[players[i].x].slot[players[i].y] == LevelGround){
 		//Remove old effects which no longer apply
 		//Remove City effect
 		if(players[i].Ceffect == 1){

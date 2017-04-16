@@ -13,7 +13,9 @@ struct player{ /* this struct allows the information (in the form of characters,
 	char playername[20];
 	enum playerclass class;
 	enum slottype type;
-	int  slotNum;
+    //Player now needs a 2D position, using x and y
+    int x;
+    int y;
 	float  lifepts;
 	int capabilities;
 	int  intelligence;
@@ -34,9 +36,10 @@ struct player{ /* this struct allows the information (in the form of characters,
 	int magtemp;
 }players[7]; /* an array size of 7 has been initialised for the number of players within it*/
 
-struct slot{
-	enum slottype slot;
-}slots[20];
+struct board{
+	enum slottype slot[10];
+    int board[10];
+}slots[10];
 
 
 
