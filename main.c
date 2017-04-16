@@ -118,7 +118,6 @@ int main(){
 	}
 
     printboard(boardsize, player_cnt);
-    printf("1 \n");
 
 	//Game Mechanics
     /* Movement

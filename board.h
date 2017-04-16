@@ -39,7 +39,7 @@ void printboard(int boardsize, int player_cnt){
     int i=0;
     int j=0;
     int print=0;
-    int player_num=1;
+    int player_num=0;
     
     
     //Refill the board using 0 as a null value
@@ -62,12 +62,14 @@ void printboard(int boardsize, int player_cnt){
         i++;
     }
     
+    i=j=0;
+
     while(i<boardsize){
         while(j<boardsize){
             while (player_num <= player_cnt) {
                 //Print player postion on board
-                if(i == players[player_num].x && j == players[player_num].y){
-                    printf("_%d_", player_num);
+                if(i+1 == players[player_num].x && j+1 == players[player_num].y){
+                    printf("_%d_", player_num+1);
                     //Tell the next if statement something has already been printed
                     print=1;
                     //Can only be one person per square so setting player_num to player_cnt to end the loop
@@ -87,7 +89,7 @@ void printboard(int boardsize, int player_cnt){
             }
             //Print vertical lines for baord
             printf("|");
-            player_num=1;
+            player_num=0;
             j++;
         }
         printf("\n");
