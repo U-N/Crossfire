@@ -2,7 +2,6 @@
 #define CAPABILITIES_H
 
 #include <stdio.h>
-#include "struct.h"
 #include <stdlib.h>
 #include <time.h>
 

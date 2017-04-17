@@ -1,192 +1,219 @@
+/*
+ * main.c
+
+ *
+ *  Created on: 29 Mar 2017
+ *      Author: liliana
+ */
+
+
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include "struct.h"
 #include <stdlib.h>
 #include <math.h>
-/* inclusion of my header files where my code has been sectioned off according to certain requirements for the game.*/
+#include "crossfireOperations.h"
+#include "struct.h"
 #include "slot.h"
-//#include "attack.h"
 #include "capabilities.h"
-//#include "movement.h"
-#include "board.h"
-
-/* functions are initialized which need variables such as slot and player counting from the header files*/
-void capabilities(int count, int i);
-void slot_type(int slot_cnt);
-void slot_assign(int slot_cnt, int player_cnt);
-int attack(int no, int playersize, int remainingplayers);
-void movement(int i, int direction);
-int createboard(int player_cnt);
-void printboard(int boardsize, int player_cnt);
 
 int main(){
-	int player_cnt=0, slot_cnt=0, i;
-	int Opt_class = 0;
-
-	printf("Please enter the number of players between 2-6: "); /* program is asking the user the name of players he/she wants in the game*/
-	fflush(stdout);
-	while(player_cnt<2 || player_cnt>6){ //Make sure the player chooses a valid number of players
-		scanf("%d", &player_cnt);
-	}
-
-    int boardsize = createboard(player_cnt);
-
-	for(i=0;i<player_cnt;i++){
-		//Assign temps for later use in ensure capabilities outside boundaries are not reached.
-		players[i].dextemp=0;
-		players[i].strtemp=0;
-		players[i].magtemp=0;
-		Opt_class=0;
-	    printf("Player %d Please enter your name: ", i+1); /* as the number of players is being incremented to the user's max number, the names of the players are being assigned to each number and stored within an array*/
-		fflush(stdout);
-		scanf("%s", &players[i].playername);
-
-		printf("1 = Elf\n");
-		printf("2 = Human\n"); /* Options for the player's class are clearly printed with a corresponding integer value which will be inputed by the user and compared to the player class enumeration in struct.h*/
-		printf("3 = Ogre\n");
-		printf("4 = Wizard\n");
-		printf("Enter a number to choose your class: ");
-		fflush(stdout);
-		while(Opt_class<1 || Opt_class>4){ //Make sure the player chooses a valid number in order to select a class
-			scanf("%d", &Opt_class);
-		}
-
-		players[i].class = --Opt_class; //Assign each player the correct class, using their input, and the enum from struct.h
-		players[i].lifepts = 100; /* each player is being given 100% health at the start of the game*/
-		puts("");
-				printf("Player %d -> %s \n", i+1, players[i].playername);
-
-				if(players[i].class == Elf){
-				printf("(Elf , %0.0f)\n", players[i].lifepts);
-				fflush(stdout);
-				}
-				else if(players[i].class == Human){
-					printf("(Human , %0.0f)\n", players[i].lifepts);
-					fflush(stdout);
-				}
-				else if(players[i].class == Ogre){
-					printf("(Ogre , %0.0f)\n", players[i].lifepts);
-					fflush(stdout);
-				}
-				else if(players[i].class == Wizard){
-					printf("(Wizard , %0.0f)\n", players[i].lifepts);
-					fflush(stdout);
-				}
-			capabilities(Opt_class, i); /* Calling the capabilities function to print out each player's abilities*/
-	}
-
-	/*This section of code allows me to assign a specific starting slot to each player and change their abilities depending on which slot they move to next*/
-	slot_assign(boardsize, player_cnt);
-
-	for(i=0;i<player_cnt;++i){
-		puts("");
-		printf("Player %d -> %s \n", i+1, players[i].playername);
-
-		if(players[i].class == Elf){ /* I have manually printed out the class type by going through, with if statements, the types of enum playerclass values*/
-		printf("(Elf , %0.0f)\n", players[i].lifepts);
-		fflush(stdout);
-		}
-		else if(players[i].class == Human){
-			printf("(Human , %0.0f)\n", players[i].lifepts);
-			fflush(stdout);
-		}
-		else if(players[i].class == Ogre){
-			printf("(Ogre , %0.0f)\n", players[i].lifepts);
-			fflush(stdout);
-		}
-		else if(players[i].class == Wizard){
-			printf("(Wizard , %0.0f)\n", players[i].lifepts);
-			fflush(stdout);
-		}
-
-		printf("%s is at %d, %d ->", players[i].playername, players[i].x, players[i].y);
-
-		if(slots[players[i].x].slot[players[i].y] == LevelGround){ /* prints the type of slot according to the slottype enumeration in struct.h*/
-			printf("  Level Ground\n");
-		}
-
-		if(slots[players[i].x].slot[players[i].y] == Hill){
-			printf("  Hill\n");
-		}
+    int player_cnt=0, slot_cnt=0, i;
+    int Opt_class = 0;
+    int row, column;
+    struct slot *currSlot = NULL;
+    struct slot *foundSlots;
+    
+    printf("Please enter the number of players between 2-6: "); /* program is asking the user the name of players he/she wants in the game*/
+    fflush(stdout);
+    while(player_cnt<2 || player_cnt>6){ //Make sure the player chooses a valid number of players
+        scanf("%d", &player_cnt);
+    }
+    
+    int BOARD_SIZE = getBoardSize(player_cnt);
+    
+    bool explored[BOARD_SIZE][BOARD_SIZE];
+    int count =0;
+    
+    //pointer to slot (0,0)
+    struct slot *upLeft;
+    //pointer to slot (0, boardSize -1)
+    struct slot *upRight;
+    //pointer to slot (boardSize - 1, 0)
+    struct slot *downLeft;
+    //pointer to slot (boardSize - 1, boardSize -1)
+    struct slot *downRight;
+    
+    //Create the board
+    createBoard(BOARD_SIZE,&upLeft, &upRight, &downLeft, &downRight);
+    
+    for(i=0;i<player_cnt;i++){
+        playerStats(i, Opt_class);
+        capabilities(Opt_class, i); /* Calling the capabilities function to print out each player's abilities*/
+    }
+    
+    /*This section of code allows me to assign a specific starting slot to each player and change their abilities depending on which slot they move to next*/
+    slot_assign(BOARD_SIZE, player_cnt);
+    
+    for(i=0;i<player_cnt;++i){
+        puts("");
+        printf("Player %d -> %s \n", i+1, players[i].playername);
         
-		if(slots[players[i].x].slot[players[i].y] == City){
-			printf("  City\n");
-		}
+        if(players[i].class == Elf){ /* I have manually printed out the class type by going through, with if statements, the types of enum playerclass values*/
+            printf("(Elf , %0.0f)\n", players[i].lifepts);
+            fflush(stdout);
+        }
+        else if(players[i].class == Human){
+            printf("(Human , %0.0f)\n", players[i].lifepts);
+            fflush(stdout);
+        }
+        else if(players[i].class == Ogre){
+            printf("(Ogre , %0.0f)\n", players[i].lifepts);
+            fflush(stdout);
+        }
+        else if(players[i].class == Wizard){
+            printf("(Wizard , %0.0f)\n", players[i].lifepts);
+            fflush(stdout);
+        }
         
-		puts("");
-	}
-
-    printboard(boardsize, player_cnt);
-
-	//Game Mechanics
-    /* Movement
-
-	int remainingplayers = player_cnt;
-	int action = 0;
-	i=0;
-	//Loop until only one remains
-	while(remainingplayers != 1){
-		//Loop through all the players, letting each one take a turn
-		while(i<player_cnt){
-			//Check if the player is still alive
-			if(players[i].lifepts > 0){
-				printf("%s, Please choose an action: \n", players[i].playername);
-				//All possible actions
-				printf("1 = Attack \n2 = Move Left \n3 = Move Right \n");
-				scanf("%d", &action);
-				//Using a do while loop as needs to be edited while in the loop
-				//If the player has reach the end of the slots, we need to tell them and give them another choice
-				do{
-					if(action == 1){
-						//Call the attack function and check if anyone died
-						remainingplayers = attack(i, player_cnt, remainingplayers);
-					}
-					else if(action == 2){
-						//If the player can't move any further left, notify them and give them another chance
-						if(players[i].slotNum <= 1){
-							printf("You cannot move any further left, Please choose a different action:\n");
-							i--;
-							action=0;
-						}
-						else{
-							//Call the movement function
-							//movement(i, action);
-						}
-					}
-					else if(action == 3){
-						if(players[i].slotNum >= slot_cnt){
-							printf("You cannot move any further right, Please choose a different action:\n");
-							i--;
-							action=0;
-						}
-						else{
-							//movement(i, action);
-						}
-					}
-					else{
-						scanf("%d", &action);
-					}
-				}while(action<1 && action>3);
-
-			}
-			i++;
-		}
-		//reset i to go through the loop again
-		i=0;
-	}
-
-	i=0;
-	while(i<player_cnt){
-		//Find which player is still alive, at this point there should only be one
-		if(players[i].lifepts > 0){
-			//Print who won
-			printf("Game Over! %s Wins", players[i].playername);
-		}
-		i++;
-	}
-     
-     */
+        printf("%s is at %d, %d ->", players[i].playername, players[i].x, players[i].y);
+        
+        if(slots[players[i].x].slot[players[i].y] == LevelGround){ /* prints the type of slot according to the slottype enumeration in struct.h*/
+            printf("  Level Ground\n");
+        }
+        
+        if(slots[players[i].x].slot[players[i].y] == Hill){
+            printf("  Hill\n");
+        }
+        
+        if(slots[players[i].x].slot[players[i].y] == City){
+            printf("  City\n");
+        }
+        
+        puts("");
+    }
+    
+    printboard(BOARD_SIZE, player_cnt);
+    
+    //Game Mechanics
+    /*	Asks the user the row and the column of the slot
+     s/he wants to retrieve from the board.
+     Note that the user needs to know the size of the board to input
+     the correct row and column of the slot s/he wants to retrieve */
+    getDesiredElement(BOARD_SIZE, &row,&column);
+    
+    //Finds the slot
+    
+    /*If the the required slot is closer to the down-right
+     * corner of the board the search starts from downRight,
+     * which points to slot at position (boardSize-1, boarSize -1)*/
+    if(row >= BOARD_SIZE/2){
+        if(column >= BOARD_SIZE/2){
+            currSlot = reachDesiredElement(row,column,downRight);
+        }
+        else{
+            currSlot = reachDesiredElement(row,column,downLeft);
+        }
+        /*If the the required slot is closer to the down-left
+         * corner of the board the search starts from downLeft,
+         * which points to slot at position (boardSize-1, 0)*/
+    }
+    else{
+        /*If the the required slot is closer to the up-right
+         * corner of the board the search starts from upRight,
+         * which points to slot at position (0, boarSize -1)*/
+        if(column >= BOARD_SIZE/2){
+            currSlot = reachDesiredElement(row,column,upRight);
+        }
+        /*If the the required slot is closer to the up-left
+         * corner of the board the search starts from upLeft,
+         * which points to slot at position (0, 0)*/
+        else{
+            currSlot = reachDesiredElement(row,column,upLeft);
+        }
+    }
+    
+    for(int i=0; i<BOARD_SIZE; i++){
+        for(int j=0; j<BOARD_SIZE;j++){
+            explored[i][j] = false;
+        }
+    }
+    
+    foundSlots = malloc(BOARD_SIZE * BOARD_SIZE * sizeof(struct slot ));
+    printf("\n\nFunction findSlotsinvoked:\n");
+    
+    if(currSlot!= NULL){
+        //invokes function findSlots. The required distance is a constant
+        //However you can reuse this function providing as input any arbitrary distance
+        findSlots(REQ_DISTANCE, 0, currSlot, foundSlots, &count, explored);
+        for(int i=0; i<count; i++){
+            printf("(%d, %d)-> ",foundSlots[i].row, foundSlots[i].column);
+        }
+    }
+  /*
+    int remainingplayers = player_cnt;
+    int action = 0;
+    i=0;
+    //Loop until only one remains
+    while(remainingplayers != 1){
+        //Loop through all the players, letting each one take a turn
+        while(i<player_cnt){
+            //Check if the player is still alive
+            if(players[i].lifepts > 0){
+                printf("%s, Please choose an action: \n", players[i].playername);
+                //All possible actions
+                printf("1 = Attack \n2 = Move Left \n3 = Move Right \n");
+                scanf("%d", &action);
+                //Using a do while loop as needs to be edited while in the loop
+                //If the player has reach the end of the slots, we need to tell them and give them another choice
+                do{
+                    if(action == 1){
+                        //Call the attack function and check if anyone died
+                        //remainingplayers = attack(i, player_cnt, remainingplayers);
+                    }
+                    else if(action == 2){
+                        //If the player can't move any further left, notify them and give them another chance
+                        if(players[i].slotNum <= 1){
+                            printf("You cannot move any further left, Please choose a different action:\n");
+                            i--;
+                            action=0;
+                        }
+                        else{
+                            //Call the movement function
+                            movement(i, action);
+                        }
+                    }
+                    else if(action == 3){
+                        if(players[i].slotNum >= slot_cnt){
+                            printf("You cannot move any further right, Please choose a different action:\n");
+                            i--;
+                            action=0;
+                        }
+                        else{
+                            movement(i, action);
+                        }
+                    }
+                    else{
+                        scanf("%d", &action);
+                    }
+                }while(action<1 && action>3);
+                
+            }
+            i++;
+        }
+        //reset i to go through the loop again
+        i=0;
+    }
+    
+    i=0;
+    while(i<player_cnt){
+        //Find which player is still alive, at this point there should only be one
+        if(players[i].lifepts > 0){
+            //Print who won
+            printf("Game Over! %s Wins", players[i].playername);
+        }
+        i++;
+    }
+*/
 	return 0;
 }
-
